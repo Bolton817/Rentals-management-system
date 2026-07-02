@@ -10,8 +10,8 @@ def get_avatar_path(instance, filename):
     return 'user-avatar/{0}/{1}'.format(instance.username, filename)
 
 def get_user_docs_path(instance, filename):
-    return 'user-docs/{0}/{1}'.format(instance.associated_account, filename)
-
+    return 'user-docs/{0}/{1}'.format(str(instance.associated_account).strip(), filename)
+    
 class User(AbstractUser):
     avatar = models.ImageField(upload_to=get_avatar_path, default='no-avatar.png')
     is_verified = models.BooleanField(default=False)
@@ -19,7 +19,7 @@ class User(AbstractUser):
     is_manager = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.username} | {self.first_name} {self.last_name}"
+        return f"{self.username} - {self.first_name} {self.last_name}"
 
 
 class Profile(models.Model):

@@ -8,7 +8,7 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = str(os.getenv('DJANGO_SECRET_KEY'))
-DEBUG = False
+DEBUG = True
 
 # Authentication handler for django/allauth
 AUTHENTICATION_BACKENDS = [
@@ -59,7 +59,13 @@ INSTALLED_APPS = [
 SITE_ID = 1
 AUTH_USER_MODEL = 'accounts.User'
 
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok.io',]
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok.io',
+    'https://*.ngrok-free.app',
+]
+
+# Tell Django it is behind a secure proxy so it builds HTTPS redirects correctly
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,7 +83,7 @@ STRIPE_PUBLISHABLE_KEY = str(os.getenv('STRIPE_PUBLISHABLE_KEY'))
 STRIPE_SECRET_KEY = str(os.getenv('STRIPE_SECRET_KEY'))
     
 #handle staticfiles
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -104,9 +110,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -232,3 +241,5 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
+
+PHONENUMBER_DEFAULT_REGION = 'KE'
